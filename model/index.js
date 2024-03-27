@@ -6,20 +6,17 @@ const sequelize = new Sequelize('employees', 'root', '', {
   pool: { max: 5, min: 0, idle: 10000 }
 });
 
-async function fetchData() {
+const  dbConnection = async()=> {
   try {
     await sequelize.authenticate();
     console.log('DB connected');
-
-    const empData = await sequelize.query('SELECT * FROM `employees`', { type: QueryTypes.SELECT });
-    return empData;
   } catch (error) {
     console.error('Unable to connect to the database:', error);
-    throw error; // Rethrow the error to handle it appropriately where fetchData is called
+    throw error; 
   }
 }
 
-async function createTableAndInsertData() {
+const createTable= async ()=> {
   try {
     await sequelize.query(`
       CREATE TABLE IF NOT EXISTS Trainee (
@@ -31,14 +28,7 @@ async function createTableAndInsertData() {
       )
     `);
 
-    await sequelize.query(`
-      INSERT INTO Trainee (firstName, lastName, email, age)
-      VALUES 
-        ('Nishar', 'Alam', 'nishar@gmail.com', 21),
-        ('Pankaj', 'Thakur', 'pamkaj@gmail.com', 21)
-    `);
-
-    console.log('Table created and data inserted successfully');
+    console.log('Table created successfully');
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -46,4 +36,59 @@ async function createTableAndInsertData() {
   }
 }
 
-module.exports = { fetchData, createTableAndInsertData };
+const insertData= async ()=> {
+  try {
+      await sequelize.query(`
+      INSERT INTO Trainee (firstName, lastName, email, age)
+      VALUES 
+        ('Nishar', 'Alam', 'nishar@gmail.com', 21),
+        ('Pankaj', 'Thakur', 'pamkaj@gmail.com', 21)
+        ('Hinal', 'satodiya', 'hinal@gmail.com', 21)
+        ('Rahul', 'Thakur', 'rahul@gmail.com', 21)
+        ('Raees', 'Khan', 'raees@gmail.com', 21)
+        ('Salar', 'ahmed', 'salar@gmail.com', 21)
+        ('Orhan', 'Ali', 'orhan@gmail.com', 21)
+        ('Mahmed', 'Ali', 'mahmed@gmail.com', 21)
+        ('Konoor', 'Gazi', 'konoor@gmail.com', 21)
+
+    `);
+
+    console.log('Data inserted successfully');
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    await sequelize.close(); 
+  }
+}
+
+const fetchData = async () => {
+  try {
+      const empData = await sequelize.query('SELECT * FROM `employees`', { type: QueryTypes.SELECT });
+      return empData;
+
+  } catch (error) {
+      console.error('Error:', error);
+  } finally {
+      await sequelize.close();
+  }
+}
+
+ 
+const updateData= async ()=> {
+  try {
+      await sequelize.query(`UPDATE Trainee 
+      SET email = "nalam.netclues@gmail.com"
+      WHERE id = 1`);
+
+    console.log('Data update successfully');
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    await sequelize.close(); 
+  }
+}
+
+
+
+
+module.exports = { createTable, fetchData, dbConnection, insertData, updateData  };

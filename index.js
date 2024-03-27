@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 require('./model');
-const { fetchData,createTableAndInsertData } = require('./model/index');
+const {createTable, fetchData, dbConnection, insertData, updateData } = require('./model/index');
 
 app.get('/', async (req, res) => {
   try {
